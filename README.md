@@ -124,10 +124,13 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
   - Hoặc CPU đa luồng (với mô hình UVR-MDX-NET Inst HQ 3).
 - Đã cài đặt **FFmpeg** trên hệ thống (đã có trong PATH). Link down => https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z
 
-### 2. Cài Đặt Thư Viện
-
+### 2. Cài Đặt Chương trình
+1. Download open sources: => https://github.com/haystudio73/AI-Audio-Separator/
+2. Hoặc
 Mở terminal trong thư mục dự án và chạy lệnh:
 ```bash
+git clone https://github.com/haystudio73/AI-Audio-Separator.git
+cd AI-Audio-Separator
 # Cài đặt các thư viện phụ thuộc
 pip install -r requirements.txt
 ```
