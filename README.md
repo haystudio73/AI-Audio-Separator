@@ -18,6 +18,8 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
    - **Dereverb RoFormer**: Khử tiếng vang phòng thu và tiếng vọng, làm sạch giọng hát.
    - **Tự động tải mô hình (Auto Download)**: Kiểm tra và tải tự động các checkpoint từ Hugging Face / GitHub khi người dùng lựa chọn mô hình chưa có trong máy.
 
+<img width="934" height="789" alt="UI 1" src="https://github.com/user-attachments/assets/cd6ab869-52b7-4e72-9eab-46d5c763a37a" />
+
 2. **Giao Diện Bootstrap 5 Hiện Đại**:
    - Thiết kế giao diện thẻ mờ **Glassmorphism**, hiện đại, sang trọng.
    - **Hỗ trợ 2 chế độ Sáng / Tối (Dark / Light Mode)** chuyển đổi mượt mà với 1 nút bấm.
@@ -34,10 +36,14 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
    - Tùy chọn định dạng xuất: Lossless WAV, FLAC hoặc nén MP3.
    - Bật/tắt tính toán dấu phẩy động nửa chính xác (FP16 Autocast) giúp tiết kiệm 50% VRAM.
 
+<img width="920" height="797" alt="settings 1" src="https://github.com/user-attachments/assets/72e1db7e-6c88-46cf-af30-57e8ae710543" />
+
 5. **Hệ Thống Lưu Trữ Lịch Sử (History Queue - Tối đa 67 Mục)**:
    - Tự động lưu mọi lượt phân tách thành công vào `history.json`.
    - Cơ chế hàng đợi **FIFO tối đa đúng 67 bản ghi**: Tự động luân chuyển và loại bỏ bản ghi cũ nhất khi vượt quá 67.
    - Trình phát âm thanh trực tiếp (Audio Player) cho từng stem trong lịch sử kèm nút tải xuống riêng lẻ hoặc xóa lịch sử.
+
+<img width="941" height="797" alt="help 1" src="https://github.com/user-attachments/assets/63cd2f81-d6dd-4470-a465-d13e56775db8" />
 
 6. **Trích Xuất Lời Bài Hát - Karaoke Lyrics Editor** 🎤:
    - **Tự động nhận diện lời bài hát (ASR - Automatic Speech Recognition)**: Sử dụng Whisper Model để phiên âm giọng hát thành text lời bài.
@@ -58,6 +64,8 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
      - `.lrc` - LRC format (hỗ trợ hầu hết các ứng dụng Karaoke và music player).
      - `.txt` - Văn bản thuần, không có timestamp.
      - `.json` - Dữ liệu có cấu trúc, gồm timestamp từng câu.
+
+<img width="956" height="798" alt="kara 1" src="https://github.com/user-attachments/assets/e0821735-892f-43ed-a2aa-515d1403067b" />
 
 ---
 
