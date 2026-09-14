@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="app_title">AI Music Source Separation</title>
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Custom Style -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg border-bottom sticky-top py-3" style="background: var(--card-bg); backdrop-filter: var(--glass-blur);">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <i class="bi bi-soundwave text-primary fs-2"></i>
+        <div>
+          <span class="fs-4 brand-gradient">AI Audio Separator</span>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2">UI :3000</span>
+          <span class="badge bg-secondary-subtle text-secondary-emphasis ms-1">API :5000</span>
+        </div>
+      </a>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <!-- Backend API Badge (Compact, expands on hover) -->
+        <div id="api-status-badge" class="d-none d-md-flex align-items-center gap-1 px-2 py-1 rounded-pill border bg-body-tertiary compact-hover-badge" title="Backend REST API Server (Port 5000)">
+          <span class="spinner-grow spinner-grow-sm text-warning flex-shrink-0" id="api-status-indicator" style="width: 8px; height: 8px;"></span>
+          <span class="badge-short-text small fw-bold">API</span>
+          <span id="api-status-text" class="badge-full-text small fw-semibold">API: Connecting...</span>
+        </div>
+
+        <!-- Hardware Badge (Compact, expands on hover) -->
+        <div id="hardware-badge" class="d-none d-md-flex align-items-center gap-1 px-2 py-1 rounded-pill border bg-body-tertiary compact-hover-badge" title="Thông tin phần cứng GPU / VRAM">
+          <i class="bi bi-gpu-card text-success flex-shrink-0"></i>
+          <span id="hardware-short-text" class="badge-short-text small fw-bold">GPU</span>
+          <span id="hardware-text" class="badge-full-text small fw-semibold">Detecting hardware...</span>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" id="lang-vi" class="btn btn-primary fw-bold" onclick="applyLanguage('vi')">VI</button>
+          <button type="button" id="lang-en" class="btn btn-outline-secondary fw-bold" onclick="applyLanguage('en')">EN</button>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button id="theme-toggle" class="btn btn-outline-secondary btn-sm rounded-circle px-2" title="Toggle Dark/Light Mode">
+          <i class="bi bi-sun-fill" id="theme-icon"></i>
+        </button>
+
+        <!-- Help / User Guide Button [?] -->
+        <button id="btn-help" class="btn btn-outline-info btn-sm rounded-circle d-flex align-items-center justify-content-center p-0"
+                style="width: 32px; height: 32px;"
+                data-bs-toggle="modal" data-bs-target="#helpModal"
+                title="Hướng dẫn sử dụng (User Guide)">
+          <i class="bi bi-question-lg fw-bold fs-6"></i>
+        </button>
+
+        <!-- Settings Button -->
+        <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#settingsModal">
+          <i class="bi bi-gear-fill"></i>
+          <span data-i18n="nav_settings">Cấu hình</span>
+        </button>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container my-4 my-md-5">
+
+    <!-- Header Title -->
+    <div class="text-center mb-5">
+      <h1 class="display-6 fw-bold mb-2">
+        <span data-i18n="app_title">AI Music Source Separation</span>
+      </h1>
+      <p class="text-secondary lead mx-auto" style="max-width: 700px;" data-i18n="app_subtitle">
+        Phân tách Giọng hát & Nhạc nền bằng Trí tuệ Nhân tạo thế hệ mới
+      </p>
+    </div>
+
+    <!-- Section 1: Upload & Separation Control -->
+    <div class="row g-4 mb-5">
+      <!-- Upload Card -->
+      <div class="col-lg-6">
+        <div class="card glass-card h-100 p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-cloud-arrow-up text-primary"></i>
+              <span data-i18n="upload_title">Tải tệp âm thanh lên</span>
+            </h5>
+            <span class="badge bg-info-subtle text-info border border-info-subtle">
+              Max 100MB &bull; Max 8 Phút
+            </span>
+          </div>
+
+          <!-- Drag and drop zone -->
+          <div id="dropzone" class="dropzone-area mb-3">
+            <input type="file" id="audio-file-input" accept="audio/*" class="d-none">
+            <i class="bi bi-file-earmark-music dropzone-icon d-block"></i>
+            <h6 class="fw-bold mb-1" data-i18n="upload_desc">Kéo thả hoặc nhấp để chọn tệp âm thanh</h6>
+            <p class="text-secondary small mb-3" data-i18n="upload_hint">
+              Hỗ trợ MP3, WAV, FLAC, M4A, OGG. Tối đa 100 MB, thời lượng tối đa 8 phút.
+            </p>
+            <button type="button" class="btn btn-outline-primary btn-sm px-4 rounded-pill" onclick="document.getElementById('audio-file-input').click()">
+              <i class="bi bi-folder2-open me-1"></i>
+              <span data-i18n="select_file_btn">Chọn tệp từ máy tính</span>
+            </button>
+          </div>
+
+          <!-- Alert container for validation errors -->
+          <div id="upload-alert" class="alert alert-danger d-none align-items-center gap-2 py-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <span id="upload-alert-text"></span>
+          </div>
+
+          <!-- Source Audio Details Card -->
+          <div id="file-info-card" class="card border bg-body-tertiary p-3 d-none">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="fw-bold small" data-i18n="file_info_title">Thông tin tệp nguồn:</span>
+              <span id="file-valid-badge" class="badge bg-success-subtle text-success border border-success-subtle">
+                <i class="bi bi-check-circle me-1"></i><span data-i18n="status_valid">Hợp lệ</span>
+              </span>
+            </div>
+            <div class="row g-2 small text-secondary">
+              <div class="col-sm-6">
+                <strong data-i18n="file_name">Tên:</strong> <span id="info-filename" class="text-body text-break">-</span>
+              </div>
+              <div class="col-sm-6">
+                <strong data-i18n="file_size">Dung lượng:</strong> <span id="info-filesize" class="text-body">-</span>
+              </div>
+              <div class="col-sm-6">
+                <strong data-i18n="file_duration">Thời lượng:</strong> <span id="info-duration" class="text-body">-</span>
+              </div>
+              <div class="col-sm-6">
+                <strong data-i18n="file_format">Định dạng:</strong> <span id="info-format" class="text-body">-</span>
+              </div>
+            </div>
+            <!-- Audio preview -->
+            <div class="mt-3">
+              <audio id="source-audio-preview" controls class="w-100"></audio>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings & Action Card -->
+      <div class="col-lg-6">
+        <div class="card glass-card h-100 p-4 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+              <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                <i class="bi bi-sliders text-primary"></i>
+                <span data-i18n="opt_model_header">Chọn Mô hình AI:</span>
+              </h5>
+
+              <!-- Quick Mode vs Adv Mode Switcher -->
+              <div class="mode-switcher-container" role="group" aria-label="Mode selector">
+                <div class="btn-group btn-group-sm p-1 rounded-pill bg-body-tertiary border shadow-sm">
+                  <input type="radio" class="btn-check" name="app_separation_mode" id="mode-quick" autocomplete="off" checked>
+                  <label class="btn btn-sm rounded-pill px-3 py-1 fw-bold d-flex align-items-center gap-1 mode-btn" for="mode-quick" id="lbl-mode-quick" title="Quick Mode: Cấu hình mặc định tối ưu">
+                    <i class="bi bi-lightning-charge-fill text-warning"></i>
+                    <span data-i18n="mode_quick">Quick Mode</span>
+                  </label>
+
+                  <input type="radio" class="btn-check" name="app_separation_mode" id="mode-adv" autocomplete="off">
+                  <label class="btn btn-sm rounded-pill px-3 py-1 fw-bold d-flex align-items-center gap-1 mode-btn" for="mode-adv" id="lbl-mode-adv" title="Adv Mode: Tùy chỉnh toàn diện">
+                    <i class="bi bi-gear-wide-connected text-secondary"></i>
+                    <span data-i18n="mode_adv">Adv Mode</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode Notification / Status Banner -->
+            <div id="mode-banner" class="alert py-2 px-3 mb-3 d-flex align-items-center gap-2 small border-0 rounded-3 shadow-xs" style="background: rgba(13, 202, 240, 0.12); color: var(--bs-info-text-emphasis);">
+              <i id="mode-banner-icon" class="bi bi-lightning-charge-fill text-warning fs-6"></i>
+              <div id="mode-banner-text" class="flex-grow-1">
+                <strong>Quick Mode:</strong> <span data-i18n="quick_mode_desc">Cấu hình mặc định tối ưu: HT-Demucs v4 (4 Stems), GPU (CUDA), MP3 320kbps, Segment 256, Overlap 4.</span>
+              </div>
+            </div>
+
+            <!-- Advanced Settings Container (Hidden in Quick Mode, Shown in Adv Mode) -->
+            <div id="adv-settings-panel" class="d-none">
+              <!-- Model Selection -->
+              <div class="mb-3">
+                <label class="form-label small fw-semibold text-secondary" data-i18n="opt_model">Chọn Mô hình AI:</label>
+                <select id="select-model" class="form-select form-select-lg">
+                  <!-- Dynamically populated -->
+                </select>
+                <div id="model-desc" class="form-text mt-1 text-secondary small"></div>
+              </div>
+
+              <!-- Device & Output Format -->
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <label class="form-label small fw-semibold text-secondary" data-i18n="opt_device">Thiết bị xử lý:</label>
+                  <select id="select-device" class="form-select">
+                    <option value="cuda">GPU (NVIDIA CUDA)</option>
+                    <option value="cpu">CPU Đa luồng</option>
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label small fw-semibold text-secondary" data-i18n="opt_format">Định dạng xuất:</label>
+                  <select id="select-format" class="form-select">
+                    <option value="WAV">WAV (Lossless 24-bit/16-bit)</option>
+                    <option value="FLAC">FLAC (Lossless compressed)</option>
+                    <option value="MP3">MP3 (320kbps)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Model Tuning (Segment size & Overlap) -->
+              <div class="p-3 border rounded bg-body-tertiary mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="small fw-semibold" data-i18n="opt_quality">Tối ưu hóa (Segment & Overlap):</span>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">SDR Optimizer</span>
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label small text-secondary mb-1">Segment Size:</label>
+                    <select id="select-segment" class="form-select form-select-sm">
+                      <option value="256" selected>256 (Khuyến nghị VRAM >= 6GB)</option>
+                      <option value="128">128 (Tiết kiệm VRAM cho 4GB)</option>
+                      <option value="64">64 (Cực thấp)</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small text-secondary mb-1">Overlap:</label>
+                    <select id="select-overlap" class="form-select form-select-sm">
+                      <option value="2">2 (Nhanh)</option>
+                      <option value="4" selected>4 (Mượt mà, cân bằng)</option>
+                      <option value="8">8 (Độ mịn cao nhất)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GO Action Button Container -->
+          <div class="mt-4 pt-3 border-top">
+            <button id="btn-go" class="btn btn-go-action w-100 py-3 d-flex align-items-center justify-content-center gap-2" disabled>
+              <i class="bi bi-play-circle-fill fs-4" id="btn-go-icon"></i>
+              <span id="btn-go-text" data-i18n="btn_go">BẮT ĐẦU TÁCH NHẠC (GO)</span>
+              <span id="btn-go-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </button>
+            <div id="btn-hint" class="text-center mt-2 small text-muted" data-i18n="err_select_file_first">
+              Vui lòng chọn hoặc tải lên tệp âm thanh trước để kích hoạt nút GO.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1.5: Processing Progress Panel (shown during separation) -->
+    <div id="progress-panel" class="card glass-card p-4 mb-5 d-none">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <i id="progress-icon" class="bi bi-cpu-fill text-primary fs-4"></i>
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span id="progress-label" class="fw-semibold small">Đang chuẩn bị...</span>
+            <div class="d-flex align-items-center gap-2">
+              <span id="progress-elapsed" class="badge bg-secondary-subtle text-secondary border small"></span>
+              <span id="progress-pct" class="badge bg-primary-subtle text-primary border fw-bold">0%</span>
+              <button id="btn-stop-job"
+                      class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
+                      title="Dừng xử lý">
+                <i class="bi bi-stop-circle-fill"></i>
+                <span>Dừng</span>
+              </button>
+            </div>
+          </div>
+          <div class="progress" style="height: 12px; border-radius: 8px;">
+            <div id="progress-bar"
+                 class="progress-bar progress-bar-striped progress-bar-animated"
+                 role="progressbar"
+                 style="width: 0%; transition: width 0.4s ease;"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-secondary small mb-0">
+        <i class="bi bi-info-circle me-1"></i>
+        Quá trình phân tách có thể mất từ 30 giây đến vài phút tùy thuộc vào độ dài bài nhạc và thiết bị.
+        Nhấn <strong>Dừng</strong> để hủy tác vụ đang chạy.
+      </p>
+    </div>
+
+    <!-- Section 2: Results Display (Stems) -->
+    <div id="results-section" class="card glass-card p-4 mb-5 d-none">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+        <div class="d-flex align-items-center gap-2 cursor-pointer user-select-none" id="btn-toggle-results" role="button" title="Thu gọn / Mở rộng kết quả">
+          <h4 class="fw-bold mb-0 d-flex align-items-center gap-2">
+            <i class="bi bi-music-note-list text-success"></i>
+            <span data-i18n="results_title">Kết quả Phân tách</span>
+          </h4>
+          <i class="bi bi-chevron-down fs-5 section-arrow-icon" id="arrow-results"></i>
+        </div>
+        <div id="results-meta-badges" class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+          <span class="badge bg-secondary-subtle text-secondary border" id="result-time-badge">Time: -</span>
+          <span class="badge bg-primary-subtle text-primary border" id="result-device-badge">Device: -</span>
+        </div>
+      </div>
+
+      <!-- Collapsible Results Content -->
+      <div id="results-collapse-content" class="section-collapse-body">
+        <p class="text-secondary small mb-3" data-i18n="results_desc">Các track âm thanh độc lập sau khi bóc tách:</p>
+        <div id="stems-container" class="row g-3">
+          <!-- Stems inserted dynamically here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: History (Max 67 items) -->
+    <div class="card glass-card p-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2 cursor-pointer user-select-none" id="btn-toggle-history" role="button" title="Thu gọn / Mở rộng lịch sử">
+          <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+            <i class="bi bi-clock-history text-primary"></i>
+            <span data-i18n="history_title">Lịch sử Xử lý</span>
+          </h5>
+          <span id="history-counter" class="history-badge-count">0 / 67</span>
+          <i class="bi bi-chevron-down fs-5 section-arrow-icon" id="arrow-history"></i>
+        </div>
+        <button id="btn-clear-history" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 mt-2 mt-sm-0">
+          <i class="bi bi-trash3"></i>
+          <span data-i18n="btn_clear_history">Xóa tất cả lịch sử</span>
+        </button>
+      </div>
+
+      <!-- Collapsible History Content -->
+      <div id="history-collapse-content" class="section-collapse-body">
+        <p class="text-secondary small mb-0" data-i18n="history_subtitle">
+          Tối đa 67 lượt thực hiện gần nhất (tự động luân chuyển FIFO)
+        </p>
+        <!-- History Items Container -->
+        <div id="history-list" class="vstack gap-3 mt-3">
+          <!-- History items inserted dynamically -->
+        </div>
+      </div>
+    </div>
+
+
+  </main>
+
+  <!-- Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content glass-card">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="settingsModalLabel">
+            <i class="bi bi-gear-fill text-primary"></i>
+            <span data-i18n="modal_settings_title">Cấu hình Hệ thống & Mô hình AI</span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Hardware Info in Settings -->
+          <div class="card border bg-body-tertiary p-3 mb-4">
+            <h6 class="fw-bold mb-2 d-flex align-items-center gap-2">
+              <i class="bi bi-cpu-fill text-info"></i>
+              <span data-i18n="hw_detected">Thông tin Phần cứng</span>
+            </h6>
+            <div class="row g-2 small text-secondary" id="modal-hardware-info">
+              <div class="col-sm-6">GPU: <span id="m-gpu-name" class="text-body fw-semibold">-</span></div>
+              <div class="col-sm-6">VRAM: <span id="m-gpu-vram" class="text-body fw-semibold">-</span></div>
+              <div class="col-sm-6">CPU Cores: <span id="m-cpu-cores" class="text-body fw-semibold">-</span></div>
+              <div class="col-sm-6">CUDA Acceleration: <span id="m-cuda-status" class="badge bg-success-subtle text-success">-</span></div>
+            </div>
+          </div>
+
+          <!-- Model Management Table -->
+          <h6 class="fw-bold mb-2" data-i18n="settings_models_installed">Danh mục Mô hình AI (Hugging Face / PyPI):</h6>
+          <div class="table-responsive mb-4">
+            <table class="table table-sm align-middle table-hover border">
+              <thead class="table-light">
+                <tr>
+                  <th>Model</th>
+                  <th>Kiến trúc</th>
+                  <th>Stems</th>
+                  <th>Trạng thái</th>
+                  <th class="text-end">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="models-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- General Preferences -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="settings_device_label">Thiết bị mặc định:</label>
+              <select id="pref-device" class="form-select">
+                <option value="cuda">GPU (NVIDIA CUDA)</option>
+                <option value="cpu">CPU</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="settings_format_label">Định dạng âm thanh:</label>
+              <select id="pref-format" class="form-select">
+                <option value="WAV">WAV</option>
+                <option value="FLAC">FLAC</option>
+                <option value="MP3">MP3</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="pref-autocast" checked>
+                <label class="form-check-label small" for="pref-autocast" data-i18n="settings_autocast_label">
+                  Kích hoạt FP16 Autocast (Tiết kiệm 50% VRAM)
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" data-i18n="btn_close">Đóng</button>
+          <button type="button" class="btn btn-primary btn-sm px-4" id="btn-save-pref" data-i18n="btn_save_settings">Lưu cấu hình</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+    <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-message"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Backend API Configuration (Port 5000) -->
+  <script>
+    window.BACKEND_API_URL = "{{ backend_url or 'http://localhost:5000' }}";
+  </script>
+  <!-- I18n -->
+  <script src="/static/js/i18n.js"></script>
+  <!-- App JS & Settings JS -->
+  <script src="/static/js/settings.js"></script>
+  <script src="/static/js/app.js"></script>
+  <!-- Karaoke Lyrics Editor -->
+  <script src="/static/js/lyrics.js"></script>
+
+  <!-- ── Karaoke Editor Modal ─────────────────────────────────────────────── -->
+  <div class="modal fade" id="karaokeModal" tabindex="-1" aria-labelledby="karaokeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content glass-card" style="min-height: 75vh;">
+
+        <!-- Modal Header -->
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="karaokeModalLabel">
+            <i class="bi bi-music-note-beamed text-primary"></i>
+            <span data-i18n="lyrics_editor_title">Karaoke Lyrics Editor</span>
+            <span class="badge bg-secondary-subtle text-secondary border small fw-normal ms-1" id="kara-title-file"></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+          <!-- Controls Bar -->
+          <div class="kara-controls-bar">
+            <div class="kara-model-row mb-2">
+              <!-- Whisper Model -->
+              <label class="small fw-semibold text-secondary mb-0" data-i18n="lyrics_model_label">Whisper Model:</label>
+              <select id="kara-model-select" class="form-select form-select-sm" style="width: auto; min-width: 130px;">
+                <option value="tiny">tiny (Nhanh nhất)</option>
+                <option value="base" selected>base (Khuyến nghị)</option>
+                <option value="small">small (Chính xác hơn)</option>
+                <option value="medium">medium (Cao nhất)</option>
+              </select>
+
+              <!-- Language -->
+              <label class="small fw-semibold text-secondary mb-0 ms-2" data-i18n="lyrics_lang_label">Ngôn ngữ:</label>
+              <select id="kara-lang-select" class="form-select form-select-sm" style="width: auto; min-width: 150px;">
+                <option value="" data-i18n="lyrics_lang_auto">Tự động nhận diện</option>
+                <option value="vi">Tiếng Việt (vi)</option>
+                <option value="en">English (en)</option>
+                <option value="zh">中文 (zh)</option>
+                <option value="ja">日本語 (ja)</option>
+                <option value="ko">한국어 (ko)</option>
+              </select>
+
+              <!-- Extract button -->
+              <button id="kara-btn-extract" class="btn btn-primary btn-sm px-3 ms-auto"
+                      onclick="extractLyrics()">
+                <i class="bi bi-waveform me-1"></i>
+                <span data-i18n="lyrics_btn_extract">Trích xuất Lyrics</span>
+              </button>
+            </div>
+
+            <!-- Progress / Status row -->
+            <div class="d-flex align-items-center gap-3">
+              <span id="kara-spinner" class="spinner-border spinner-border-sm text-primary d-none"></span>
+              <div id="kara-progress-wrap" class="flex-grow-1 d-none" style="height: 6px;">
+                <div class="progress" style="height: 6px; border-radius: 4px;">
+                  <div id="kara-progress-bar"
+                       class="progress-bar progress-bar-striped progress-bar-animated"
+                       style="width: 100%;"></div>
+                </div>
+              </div>
+              <span id="kara-status-msg" class="small text-secondary"></span>
+              <!-- Download buttons -->
+              <button id="kara-btn-srt" class="btn btn-sm btn-outline-success rounded-pill px-3"
+                      onclick="confirmDownload('srt')" data-i18n="lyrics_download_srt">
+                💾 Tải SRT
+              </button>
+              <button id="kara-btn-lrc" class="btn btn-sm btn-outline-info rounded-pill px-3"
+                      onclick="confirmDownload('lrc')" data-i18n="lyrics_download_lrc">
+                💾 Tải LRC
+              </button>
+            </div>
+          </div>
+
+          <!-- Audio Player Row -->
+          <div class="kara-audio-row">
+            <audio id="kara-audio" controls class="w-100" preload="metadata">
+              <source src="" type="audio/wav">
+            </audio>
+          </div>
+
+          <!-- Lyrics Table -->
+          <div class="kara-table-wrap">
+            <!-- Empty hint -->
+            <div id="kara-empty-hint" class="text-center py-5 text-secondary">
+              <i class="bi bi-mic-mute fs-2 d-block mb-2"></i>
+              <span data-i18n="lyrics_empty_hint">Nhấn "Trích xuất Lyrics" để bắt đầu nhận diện giọng hát.</span>
+            </div>
+
+            <!-- Table -->
+            <table class="table table-sm table-hover karaoke-editor-table align-middle d-none" id="kara-table">
+              <thead>
+                <tr>
+                  <th data-i18n="lyrics_col_no">#</th>
+                  <th data-i18n="lyrics_col_start">Bắt đầu</th>
+                  <th data-i18n="lyrics_col_end">Kết thúc</th>
+                  <th data-i18n="lyrics_col_text">Nội dung lyrics</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="kara-lyrics-tbody"></tbody>
+            </table>
+          </div>
+
+        </div><!-- /modal-body -->
+      </div>
+    </div>
+  </div>
+  <!-- ── /Karaoke Editor Modal ──────────────────────────────────────────────── -->
+
+  <!-- ── Help / User Guide Modal [?] ─────────────────────────────────────────── -->
+  <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content glass-card border">
+        <div class="modal-header border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-2 rounded-circle bg-info-subtle text-info d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <i class="bi bi-question-lg fs-4 fw-bold"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fw-bold mb-0" id="helpModalLabel" data-i18n="help_modal_title">
+                Hướng Dẫn Sử Dụng Chi Tiết
+              </h5>
+              <small class="text-secondary" data-i18n="help_modal_subtitle">
+                Quy trình từng bước từ tải nhạc, tách kênh đến tạo lời bài hát Karaoke
+              </small>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="vstack gap-3">
+
+            <!-- Step 1: Upload -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-primary p-2 fs-6 flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">1</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-cloud-arrow-up-fill text-primary"></i>
+                    <span data-i18n="help_step1_title">Tải Tệp Nhạc Lên</span>
+                  </h6>
+                  <p class="small text-secondary mb-2" data-i18n="help_step1_desc">
+                    Kéo thả hoặc nhấp vào khung để chọn tệp âm thanh bài hát. Hỗ trợ đầy đủ định dạng: <strong>MP3, WAV, FLAC, M4A, OGG</strong> (Tối đa 100MB, thời lượng đến 8 phút). Sau khi tải lên, bạn có thể phát nghe thử tệp gốc ngay trên trình phát.
+                  </p>
+                  <span class="badge bg-primary-subtle text-primary border">Hỗ trợ: MP3, WAV, FLAC, M4A, OGG</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Choose Mode -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-info p-2 fs-6 text-white flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">2</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-toggles text-info"></i>
+                    <span data-i18n="help_step2_title">Chọn Chế Độ: Quick Mode hoặc Adv Mode</span>
+                  </h6>
+                  <p class="small text-secondary mb-0" data-i18n="help_step2_desc">
+                    <strong>⚡ Quick Mode (Mặc định):</strong> Tự động cấu hình mô hình HT-Demucs v4 (Meta AI), bóc tách thành 4 track (Vocals, Drums, Bass, Other), tăng tốc GPU NVIDIA CUDA và xuất MP3 320kbps. Toàn bộ thông số nâng cao được ẩn đi để bạn tách nhạc với 1-click tiện lợi.<br>
+                    <strong>⚙️ Adv Mode (Nâng cao):</strong> Mở toàn quyền tùy biến chọn mô hình Mel-Band RoFormer (chuẩn phòng thu), UVR-MDX-Net, định dạng WAV Lossless 24-bit, Segment Size và Overlap.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Start Separation -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-success p-2 fs-6 flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">3</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-play-circle-fill text-success"></i>
+                    <span data-i18n="help_step3_title">Bắt Đầu Tách Nhạc (GO)</span>
+                  </h6>
+                  <p class="small text-secondary mb-0" data-i18n="help_step3_desc">
+                    Nhấn nút màu tím <strong>BẮT ĐẦU TÁCH NHẠC (GO)</strong>. Hệ thống sẽ hiển thị thanh tiến trình xử lý thời gian thực theo từng giai đoạn. Bạn có thể nhấn nút <strong>Dừng</strong> bất kỳ lúc nào nếu muốn hủy tác vụ.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Preview & Download -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-warning p-2 fs-6 text-dark flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">4</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-music-note-beamed text-warning"></i>
+                    <span data-i18n="help_step4_title">Nghe Thử & Tải Các Track (Stems)</span>
+                  </h6>
+                  <p class="small text-secondary mb-0" data-i18n="help_step4_desc">
+                    Mỗi track âm thanh được bóc tách riêng (Vocals, Drums, Bass, Other) có audio player riêng để bạn nghe thử độc lập. Nhấn <strong>Tải xuống</strong> trên từng track hoặc tải toàn bộ. Bạn có thể dùng nút mũi tên đỏ <strong>&gt;</strong> để thu gọn/mở rộng khu vực kết quả.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5: Lyrics & Karaoke -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-danger p-2 fs-6 flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">5</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-mic-fill text-danger"></i>
+                    <span data-i18n="help_step5_title">Trích Xuất Lời Bài Hát & Karaoke Editor</span>
+                  </h6>
+                  <p class="small text-secondary mb-0" data-i18n="help_step5_desc">
+                    Trên thẻ <strong>Vocals</strong>, nhấp vào nút <strong>🎤 Trích xuất Lyrics</strong>. AI Whisper (chạy local 100% miễn phí) tự động nhận diện lời bài hát. Trình phát sẽ highlight câu hát theo thời gian thực khi nghe, cho phép bạn nhấp vào từng câu để chỉnh sửa nội dung hoặc mốc thời gian và tải về file <strong>.SRT</strong> hoặc <strong>.LRC</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 6: History & DB -->
+            <div class="card border p-3 bg-body-tertiary">
+              <div class="d-flex align-items-start gap-3">
+                <div class="badge rounded-circle bg-secondary p-2 fs-6 flex-shrink-0" style="width: 32px; height: 32px; line-height: 16px;">6</div>
+                <div>
+                  <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history text-secondary"></i>
+                    <span data-i18n="help_step6_title">Quản Lý Lịch Sử & Mở Lại Từ Database</span>
+                  </h6>
+                  <p class="small text-secondary mb-0" data-i18n="help_step6_desc">
+                    Hệ thống lưu 67 lượt thực hiện gần nhất và toàn bộ lời bài hát vào cơ sở dữ liệu SQLite (<code>data/lyrics.db</code>). Nhấn nút <strong>Karaoke Editor</strong> trên thẻ lịch sử để mở lại lời bài hát bất cứ lúc nào mà không cần chạy lại mô hình AI. Có hộp thoại xác nhận trước khi xóa bản ghi.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">
+            <i class="bi bi-check2 me-1"></i> <span data-i18n="help_got_it">Đã Hiểu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ── /Help Modal ──────────────────────────────────────────────────────────── -->
+
+</body>
+</html>
+

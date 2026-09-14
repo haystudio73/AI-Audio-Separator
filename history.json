@@ -1,0 +1,75 @@
+[
+  {
+    "type": "lyrics_edit",
+    "vocals_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals).wav",
+    "total_lines": 19,
+    "srt_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals)_lyrics.srt",
+    "lrc_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals)_lyrics.lrc",
+    "db_id": 8,
+    "timestamp": "2026-09-13 22:38:22",
+    "id": "hist_1789313902193"
+  },
+  {
+    "type": "lyrics",
+    "vocals_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals).wav",
+    "whisper_model": "medium",
+    "detected_language": "vi",
+    "total_lines": 19,
+    "srt_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals)_lyrics.srt",
+    "lrc_filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals)_lyrics.lrc",
+    "db_id": 7,
+    "timestamp": "2026-09-13 22:38:00",
+    "id": "hist_1789313880499"
+  },
+  {
+    "file_id": "e705db9454d5_Ky_uc_Tay_Nguyen_master.wav",
+    "original_filename": "Ky_uc_Tay_Nguyen_master.wav",
+    "model_used": "htdemucs.yaml",
+    "device_used": "cuda",
+    "processing_time": "15.68s",
+    "stems": [
+      {
+        "stem_name": "Bass",
+        "filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Bass).wav",
+        "download_url": "/api/audio/outputs/e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Bass).wav",
+        "file_size": 46710764,
+        "file_size_formatted": "44.5 MB",
+        "duration_seconds": 264.8,
+        "duration_formatted": "04:24",
+        "format": "WAV"
+      },
+      {
+        "stem_name": "Drums",
+        "filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Drums).wav",
+        "download_url": "/api/audio/outputs/e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Drums).wav",
+        "file_size": 46710764,
+        "file_size_formatted": "44.5 MB",
+        "duration_seconds": 264.8,
+        "duration_formatted": "04:24",
+        "format": "WAV"
+      },
+      {
+        "stem_name": "Other",
+        "filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Other).wav",
+        "download_url": "/api/audio/outputs/e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Other).wav",
+        "file_size": 46710764,
+        "file_size_formatted": "44.5 MB",
+        "duration_seconds": 264.8,
+        "duration_formatted": "04:24",
+        "format": "WAV"
+      },
+      {
+        "stem_name": "Vocals",
+        "filename": "e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals).wav",
+        "download_url": "/api/audio/outputs/e705db9454d5_Ky_uc_Tay_Nguyen_master_(Demucs_Vocals).wav",
+        "file_size": 46710764,
+        "file_size_formatted": "44.5 MB",
+        "duration_seconds": 264.8,
+        "duration_formatted": "04:24",
+        "format": "WAV"
+      }
+    ],
+    "timestamp": "2026-09-13 22:36:34",
+    "id": "hist_1789313794979"
+  }
+]

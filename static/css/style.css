@@ -1,0 +1,475 @@
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  --accent-glow: rgba(99, 102, 241, 0.4);
+  --card-bg-light: rgba(255, 255, 255, 0.85);
+  --card-bg-dark: rgba(24, 27, 39, 0.85);
+  --border-light: rgba(226, 232, 240, 0.8);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(16px);
+}
+
+[data-bs-theme="dark"] {
+  --body-bg: #0f111a;
+  --card-bg: var(--card-bg-dark);
+  --card-border: var(--border-dark);
+  --text-muted: #94a3b8;
+  --dropzone-bg: rgba(30, 41, 59, 0.5);
+  --dropzone-border: #475569;
+}
+
+[data-bs-theme="light"] {
+  --body-bg: #f8fafc;
+  --card-bg: var(--card-bg-light);
+  --card-border: var(--border-light);
+  --text-muted: #64748b;
+  --dropzone-bg: rgba(241, 245, 249, 0.7);
+  --dropzone-border: #cbd5e1;
+}
+
+body {
+  background-color: var(--body-bg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.brand-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 14px 35px -10px rgba(0, 0, 0, 0.25);
+}
+
+/* Upload Dropzone */
+.dropzone-area {
+  border: 2px dashed var(--dropzone-border);
+  background-color: var(--dropzone-bg);
+  border-radius: 1rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+.dropzone-area:hover,
+.dropzone-area.dragover {
+  border-color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.08);
+  transform: translateY(-2px);
+}
+
+.dropzone-icon {
+  font-size: 3rem;
+  color: #6366f1;
+  margin-bottom: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.dropzone-area:hover .dropzone-icon {
+  transform: scale(1.1);
+}
+
+/* Action GO Button */
+.btn-go-action {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  background: var(--primary-gradient);
+  border: none;
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-go-action:disabled {
+  background: #64748b;
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.btn-go-action:not(:disabled) {
+  cursor: pointer;
+  animation: pulse-glow 2s infinite;
+}
+
+.btn-go-action:not(:disabled):hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6);
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+/* Stem Cards & Audio Player */
+.stem-player-card {
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.stem-player-card:hover {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: #6366f1;
+}
+
+.stem-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+}
+
+.stem-vocals {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+.stem-instrumental {
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.stem-drums {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.stem-bass {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Audio Player styling */
+audio {
+  width: 100%;
+  height: 42px;
+  border-radius: 20px;
+}
+
+/* History styling */
+.history-badge-count {
+  background: var(--primary-gradient);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+.history-card-item {
+  border-left: 4px solid #6366f1;
+  transition: transform 0.2s;
+}
+
+.history-card-item:hover {
+  transform: translateX(4px);
+}
+
+/* ── Karaoke Editor Modal ──────────────────────────────────────────────────── */
+
+/* Full-height modal body with scrollable table */
+#karaokeModal .modal-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.kara-controls-bar {
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  flex-shrink: 0;
+}
+
+.kara-audio-row {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--card-bg);
+  flex-shrink: 0;
+}
+
+/* Scrollable lyrics table */
+.kara-table-wrap {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 220px;
+}
+
+/* Lyrics table */
+.karaoke-editor-table {
+  margin-bottom: 0;
+  table-layout: fixed;
+}
+
+.karaoke-editor-table th {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  z-index: 2;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--card-border);
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+}
+
+.karaoke-editor-table .kara-idx { width: 3rem; text-align: center; }
+.karaoke-editor-table td:nth-child(2),
+.karaoke-editor-table td:nth-child(3) { width: 6.5rem; }
+.karaoke-editor-table td:last-child   { width: 2.5rem; text-align: center; }
+
+/* Each lyric row */
+.lyric-line {
+  transition: background 0.2s ease, border-left 0.2s ease;
+  border-left: 3px solid transparent;
+  cursor: default;
+}
+
+.lyric-line:hover {
+  background: rgba(99, 102, 241, 0.06);
+  border-left-color: #6366f1;
+}
+
+/* Active / currently-playing row */
+.lyric-line.active {
+  background: linear-gradient(90deg, rgba(99,102,241,0.18) 0%, rgba(168,85,247,0.08) 100%);
+  border-left-color: #a855f7;
+}
+
+.lyric-line.active td {
+  color: #c4b5fd;
+  font-weight: 600;
+}
+
+/* Editable time inputs */
+.kara-time-input {
+  width: 5.2rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font-size: 0.82rem;
+  font-family: ui-monospace, monospace;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.35rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.kara-time-input:hover,
+.kara-time-input:focus {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.08);
+  outline: none;
+}
+
+/* Editable lyrics text input */
+.kara-text-input {
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.35rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.kara-text-input:hover,
+.kara-text-input:focus {
+  border-color: #a855f7;
+  background: rgba(168,85,247,0.07);
+  outline: none;
+}
+
+/* Whisper model select badge area */
+.kara-model-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Lyrics button on Stem card */
+.btn-lyrics {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2rem;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #a855f7;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-lyrics:hover {
+  background: rgba(168, 85, 247, 0.25);
+  color: #c084fc;
+  border-color: #a855f7;
+}
+
+/* Quick Mode vs Adv Mode Switcher */
+.mode-switcher-container {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mode-btn {
+  font-size: 0.82rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-check:checked + .mode-btn#lbl-mode-quick {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35);
+}
+
+.btn-check:checked + .mode-btn#lbl-mode-adv {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+}
+
+.btn-check:not(:checked) + .mode-btn {
+  background: transparent !important;
+  color: var(--text-muted);
+}
+
+.btn-check:not(:checked) + .mode-btn:hover {
+  color: var(--bs-body-color);
+  background: rgba(125, 125, 125, 0.08) !important;
+}
+
+#mode-banner {
+  transition: all 0.3s ease;
+}
+
+/* Section Collapse Arrows (Matching user sketch with red accent) */
+.section-arrow-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #dc3545; /* Red arrow as drawn in user reference */
+  background: rgba(220, 53, 69, 0.08);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease, color 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: bold;
+}
+
+.section-arrow-icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover .section-arrow-icon {
+  background: rgba(220, 53, 69, 0.18);
+  color: #b02a37;
+  transform: scale(1.1);
+}
+
+.cursor-pointer:hover .section-arrow-icon.collapsed {
+  transform: rotate(-90deg) scale(1.1);
+}
+
+.section-collapse-body {
+  transition: all 0.3s ease;
+}
+
+/* Compact Hover Badges for API and VGA Hardware Info */
+.compact-hover-badge {
+  cursor: pointer;
+  max-width: 115px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  user-select: none;
+}
+
+.compact-hover-badge .badge-short-text {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+.compact-hover-badge .badge-full-text {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease 0.1s;
+}
+
+.compact-hover-badge:hover {
+  max-width: 480px;
+  background-color: var(--bs-tertiary-bg) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+}
+
+.compact-hover-badge:hover .badge-short-text {
+  display: none;
+  opacity: 0;
+}
+
+.compact-hover-badge:hover .badge-full-text {
+  display: inline-block;
+  opacity: 1;
+}
+
+#btn-help {
+  transition: all 0.2s ease;
+}
+
+#btn-help:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(13, 202, 240, 0.4);
+}
+
+
+

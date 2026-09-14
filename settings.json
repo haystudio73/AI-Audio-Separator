@@ -1,0 +1,11 @@
+{
+  "device": "cuda",
+  "model": "htdemucs.yaml",
+  "output_format": "MP3",
+  "theme": "light",
+  "language": "vi",
+  "segment_size": 256,
+  "overlap": 4,
+  "batch_size": 1,
+  "use_autocast": false
+}
