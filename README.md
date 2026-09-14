@@ -1,6 +1,6 @@
 # AI Music Source Separation (MSS) - Web Application
 
-Ứng dụng web phân tách giọng hát (Vocals) và nhạc nền (Instrumental/Stems) chất lượng cao bằng Trí tuệ Nhân tạo thế hệ mới (Mel-Band RoFormer, BS-RoFormer, UVR-MDX-Net, HT-Demucs), xây dựng trên nền tảng **Python Flask** và **Bootstrap 5**.
+Ứng dụng web phân tách giọng hát (Vocals) và nhạc nền (Instrumental/Stems) chất lượng cao bằng Trí tuệ Nhân tạo thế hệ mới (Mel-Band RoFormer, BS-RoFormer, UVR-MDX-[...]
 
 Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật chuyên sâu về các mô hình AI trong việc tách nguồn âm thanh (MSS) Open Sources trên Hugging Face!
 1. https://huggingface.co/spaces/Politrees/audio-separator_UVR
@@ -26,7 +26,7 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
 3. **Kiểm Soát & Xác Thực Tệp Âm Thanh**:
    - **Giới hạn dung lượng**: Tối đa **100 MB** (kiểm tra client-side và server-side `MAX_CONTENT_LENGTH`).
    - **Giới hạn thời lượng**: Tối đa **8 phút** (08:00) (kiểm tra tức thì trên trình duyệt bằng HTML5 Audio metadata và xác minh qua thư viện âm thanh server).
-   - **Nút Hành Động GO (Start Separation)**: Mặc định bị **vô hiệu hóa (disabled)**; chỉ khi người dùng chọn/upload tệp hợp lệ (≤ 100MB và ≤ 8 phút), nút GO mới tự động được kích hoạt (enabled) kèm hiệu ứng phát sáng (pulse glow).
+   - **Nút Hành Động GO (Start Separation)**: Mặc định bị **vô hiệu hóa (disabled)**; chỉ khi người dùng chọn/upload tệp hợp lệ (≤ 100MB và ≤ 8 phút), nút GO mới[...]
 
 4. **Quản Lý Cài Đặt (Settings Management)**:
    - Tự động phát hiện phần cứng: Nhận diện GPU NVIDIA CUDA (ví dụ: RTX 3060/4060) hoặc chuyển đổi chế độ CPU.
@@ -38,6 +38,26 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
    - Tự động lưu mọi lượt phân tách thành công vào `history.json`.
    - Cơ chế hàng đợi **FIFO tối đa đúng 67 bản ghi**: Tự động luân chuyển và loại bỏ bản ghi cũ nhất khi vượt quá 67.
    - Trình phát âm thanh trực tiếp (Audio Player) cho từng stem trong lịch sử kèm nút tải xuống riêng lẻ hoặc xóa lịch sử.
+
+6. **Trích Xuất Lời Bài Hát - Karaoke Lyrics Editor** 🎤:
+   - **Tự động nhận diện lời bài hát (ASR - Automatic Speech Recognition)**: Sử dụng Whisper Model để phiên âm giọng hát thành text lời bài.
+   - **Hỗ trợ nhiều ngôn ngữ**: Hệ thống hỗ trợ trích xuất lyrics cho bài hát tiếng Anh, tiếng Việt và nhiều ngôn ngữ khác.
+   - **4 mức độ chính xác (Whisper Models)**:
+     - **Tiny (Nhanh nhất)**: Dùng cho kiểm tra nhanh, tốc độ xử lý cực kỳ nhanh (~0.5-1 phút).
+     - **Base (Cân bằng)**: Chất lượng tốt với tốc độ hợp lý (~1-2 phút).
+     - **Small (Chính xác)**: Độ chính xác cao, phù hợp cho phần lớn bài hát (~2-4 phút).
+     - **Medium (Cao nhất)**: Độ chính xác tối đa cho các bài hát phức tạp (~4-6 phút).
+   - **Trình chỉnh sửa Lyrics trực tuyến**: Giao diện chỉnh sửa lời bài hát chuyên nghiệp với các tính năng:
+     - Phát lại âm thanh từng dòng và so sánh với text.
+     - Chỉnh sửa manual từng từ, câu mà không cần tải lại.
+     - Lưu kết quả dưới dạng file `.lrc` (LyRiCs format) hoặc `.txt` (text thuần).
+     - Tự động căn chỉnh timestamp (dấu thời gian) cho từng dòng lời.
+   - **Tích hợp Karaoke Player**: Phát lại bài hát gốc (hoặc Instrumental) kèm lời bài hát cuộn theo thời gian real-time.
+   - **Hỗ trợ Multiple Languages**: Phát hiện tự động ngôn ngữ bài hát và chọn model phù hợp.
+   - **Xuất kết quả**: Lưu lời bài hát dưới các định dạng:
+     - `.lrc` - LRC format (hỗ trợ hầu hết các ứng dụng Karaoke và music player).
+     - `.txt` - Văn bản thuần, không có timestamp.
+     - `.json` - Dữ liệu có cấu trúc, gồm timestamp từng câu.
 
 ---
 
@@ -63,19 +83,24 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
 │   ├── history_manager.py      # Quản lý lịch sử (tối đa 67 items FIFO)
 │   ├── model_manager.py        # Quản lý danh mục mô hình & tự động tải
 │   ├── separator_service.py    # Wrapper điều khiển audio-separator (CUDA/CPU)
-│   └── settings_service.py     # Đọc/Lưu cài đặt người dùng
+│   ├── settings_service.py     # Đọc/Lưu cài đặt người dùng
+│   ├── lyrics_extractor.py     # Trích xuất lyrics sử dụng Whisper Model
+│   └── karaoke_editor.py       # Chỉnh sửa và lưu lời bài hát (LRC, TXT, JSON)
 ├── static/
 │   ├── css/
 │   │   └── style.css           # Custom CSS, dark/light theme tokens, animations
 │   └── js/
 │       ├── i18n.js             # Từ điển song ngữ VI / EN
 │       ├── settings.js         # Quản lý cài đặt & gọi Backend API (Port 5000)
-│       └── app.js              # Upload, validation, nút GO, player & stems (Port 5000)
+│       ├── app.js              # Upload, validation, nút GO, player & stems (Port 5000)
+│       └── lyrics_editor.js    # Giao diện chỉnh sửa lyrics với player đồng bộ
 ├── templates/
-│   └── index.html              # Giao diện chính Bootstrap 5
+│   ├── index.html              # Giao diện chính Bootstrap 5
+│   └── lyrics_editor.html      # Giao diện chỉnh sửa Karaoke Lyrics
 └── data/
     ├── uploads/                # Tệp âm thanh upload tạm
     ├── outputs/                # Các stems âm thanh sau khi phân tách
+    ├── lyrics/                 # Lưu trữ lời bài hát (.lrc, .txt, .json)
     └── models/                 # Cache lưu trữ các mô hình AI đã tải
 ```
 
@@ -102,11 +127,13 @@ pip install -r requirements.txt
 Nếu sử dụng GPU NVIDIA CUDA:
 ```bash
 pip install "audio-separator[gpu]"
+pip install openai-whisper
 ```
 
 Nếu sử dụng máy thuần CPU:
 ```bash
 pip install "audio-separator[cpu]"
+pip install openai-whisper
 ```
 
 ### 3. Khởi Chạy Ứng Dụng (2 Cổng: 3000 UI & 5000 API)
@@ -154,10 +181,12 @@ http://localhost:3000
 
 1. **Kiểm tra phần cứng & Cấu hình**:
    - Ở thanh điều hướng trên cùng, ứng dụng sẽ hiển thị GPU phát hiện được (ví dụ: *NVIDIA GeForce RTX 3060*).
-   - Nhấp vào nút **Cấu hình (Settings)** để xem các mô hình và trạng thái tải sẵn. Bạn có thể nhấn *Tải mô hình* trước hoặc để ứng dụng tự động tải khi bắt đầu tách.
+   - Nhấp vào nút **Cấu hình (Settings)** để xem các mô hình và trạng thái tải sẵn. Bạn có thể nhấn *Tải mô hình* trước hoặc để ứng dụng tự động t[...]
+
 2. **Chọn ngôn ngữ & Chế độ Sáng/Tối**:
    - Nhấn **VI** hoặc **EN** để chuyển đổi ngôn ngữ.
    - Nhấn nút biểu tượng Mặt trời / Mặt trăng để chuyển chế độ Dark / Light.
+
 3. **Tải lên tệp âm thanh**:
    - Kéo thả file nhạc hoặc nhấn *Chọn tệp từ máy tính*.
    - Hệ thống sẽ tự động xác thực:
@@ -165,13 +194,25 @@ http://localhost:3000
      - Thời lượng ≤ 8 phút (08:00).
    - Nếu file hợp lệ: Thông tin bài hát sẽ hiển thị và nút **BẮT ĐẦU TÁCH NHẠC (GO)** sẽ sáng lên kèm hiệu ứng phát sáng.
    - Nếu file vượt quá giới hạn: Thông báo lỗi cảnh báo màu đỏ sẽ xuất hiện và nút **GO** vẫn bị khóa.
+
 4. **Bắt đầu phân tách**:
    - Chọn mô hình mong muốn (Mel-Band RoFormer cho chất lượng phòng thu cao nhất, hoặc UVR-MDX-Net nếu muốn tạo beat Karaoke nhanh).
    - Nhấn nút **BẮT ĐẦU TÁCH NHẠC (GO)**.
    - Quá trình tách sẽ diễn ra (thường mất 15 - 35 giây với GPU RTX 3060).
+
 5. **Nghe thử & Tải về**:
    - Sau khi hoàn tất, kết quả các track (Vocals, Instrumental, v.v.) sẽ xuất hiện trực quan với player nghe thử và nút *Tải xuống*.
    - Bản ghi này đồng thời được lưu vào bảng **Lịch sử Xử lý** (tối đa 67 lượt).
+
+6. **Trích xuất lời bài hát (Karaoke Lyrics)**:
+   - Tại trang **Lịch sử**, nhấp nút **Trích xuất Lyrics** ![lyrics_button] trên bất kỳ bản ghi nào.
+   - Chọn **Whisper Model** phù hợp (Tiny, Base, Small, Medium) tuỳ theo tốc độ xử lý mong muốn.
+   - Chọn **Ngôn ngữ** (auto-detect hoặc chỉ định thủ công: English, Tiếng Việt, etc.).
+   - Nhấn **Trích xuất Lyrics** - hệ thống sẽ phân tích âm thanh Vocals và chuyển đổi thành text.
+   - Sau khi hoàn tất, giao diện **Karaoke Lyrics Editor** sẽ mở:
+     - Xem và phát lại từng dòng lời với audio.
+     - Chỉnh sửa text và timestamp theo nhu cầu.
+     - Lưu lời bài hát dưới định dạng **.lrc** (Karaoke Player), **.txt** (text thuần) hoặc **.json** (dữ liệu).
 
 ---
 
@@ -191,3 +232,6 @@ http://localhost:3000
 | `DELETE` | `/api/history/<id>` | Xóa 1 bản ghi lịch sử cụ thể |
 | `DELETE` | `/api/history` | Xóa sạch toàn bộ lịch sử |
 | `GET` | `/api/audio/<folder>/<filename>` | Stream hoặc tải file âm thanh |
+| `POST` | `/api/lyrics/extract` | Trích xuất lời bài hát bằng Whisper Model |
+| `POST` | `/api/lyrics/save` | Lưu lời bài hát (LRC, TXT, JSON) |
+| `GET` | `/api/lyrics/<id>` | Lấy dữ liệu lời bài hát đã lưu |
