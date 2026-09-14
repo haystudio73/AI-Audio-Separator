@@ -2,8 +2,10 @@
 
 Ứng dụng web phân tách giọng hát (Vocals) và nhạc nền (Instrumental/Stems) chất lượng cao bằng Trí tuệ Nhân tạo thế hệ mới (Mel-Band RoFormer, BS-RoFormer, UVR-MDX-Net, HT-Demucs), xây dựng trên nền tảng **Python Flask** và **Bootstrap 5**.
 
-Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật chuyên sâu về các mô hình phân tách nguồn âm thanh (MSS) nguồn mở hàng đầu trên Hugging Face.
-
+Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật chuyên sâu về các mô hình AI trong việc tách nguồn âm thanh (MSS) Open Sources trên Hugging Face!
+1. https://huggingface.co/spaces/Politrees/audio-separator_UVR
+2. https://huggingface.co/spaces/hugging-apps/bs-roformer-leap-audio-separator
+3. https://huggingface.co/spaces/abidlabs/music-separation
 ---
 
 ## 🌟 Tính Năng Nổi Bật
