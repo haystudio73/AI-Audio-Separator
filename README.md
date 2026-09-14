@@ -37,9 +37,6 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
    - Cơ chế hàng đợi **FIFO tối đa đúng 67 bản ghi**: Tự động luân chuyển và loại bỏ bản ghi cũ nhất khi vượt quá 67.
    - Trình phát âm thanh trực tiếp (Audio Player) cho từng stem trong lịch sử kèm nút tải xuống riêng lẻ hoặc xóa lịch sử.
 
-6. **Theo Dõi Tiến Trình Tự Động (.agent folder)**:
-   - Tự động cập nhật nhật ký kiểm thử và hành động vào `.agent/tasks.md` và `.agent/walkthrough.md`.
-
 ---
 
 ## 📁 Cấu Trúc Dự Án (Kiến Trúc Tách Biệt 2 Cổng)
@@ -86,16 +83,15 @@ Dự án được xây dựng dựa trên báo cáo nghiên cứu kỹ thuật c
 
 ### 1. Yêu Cầu Hệ Thống
 - Hệ điều hành: Windows 10/11, Linux, macOS.
-- Python: Phiên bản >= 3.10 (khuyến nghị Python 3.11 - 3.13).
+- Python: Phiên bản >= 3.10 (khuyến nghị Python 3.11 - 3.13). Links down => https://www.python.org/downloads/windows/
 - Phần cứng:
   - Khuyến nghị có GPU NVIDIA (tối thiểu 4GB VRAM cho segment 128, hoặc >= 6-8GB VRAM cho segment 256) kèm driver CUDA.
   - Hoặc CPU đa luồng (với mô hình UVR-MDX-NET Inst HQ 3).
-- Đã cài đặt **FFmpeg** trên hệ thống (đã có trong PATH).
+- Đã cài đặt **FFmpeg** trên hệ thống (đã có trong PATH). Link down => https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z
 
 ### 2. Cài Đặt Thư Viện
 
 Mở terminal trong thư mục dự án và chạy lệnh:
-
 ```bash
 # Cài đặt các thư viện phụ thuộc
 pip install -r requirements.txt
